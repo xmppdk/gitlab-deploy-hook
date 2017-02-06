@@ -4,12 +4,13 @@
 
 *config.json*:
 
-```{
+```json
+{
   "logfile": "deployment.log",
   "address": "0.0.0.0",
   "port": 3344,
   "token" : "MyVerySecretToken",
-  "repository": 
+  "repository":
     {
       "name": "foo",
       "command": "/bin/true"
