@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"strconv"
 )
@@ -14,17 +15,8 @@ var conf Config
 
 func main() {
 	conf = LoadConfig()
-
-	http.HandleFunc("/", hookHandler)
-
-	address := conf.Address + ":" + strconv.FormatInt(conf.Port, 10)
-
-	log.Println("Listening on " + address)
-
-	e := http.ListenAndServe(address, nil)
-	if e != nil {
-		log.Println(e)
-	}
+	setupLogging()
+	setupWebServer()
 }
 
 func checkForError(e error, msg ...string) {
@@ -34,6 +26,29 @@ func checkForError(e error, msg ...string) {
 			panic(e.Error())
 		}
 		panic(errors.New(e.Error() + msg[0]))
+	}
+}
+
+func setupLogging() {
+	writer, e := os.OpenFile(conf.Logfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	checkForError(e)
+
+	defer func() {
+		writer.Close()
+	}()
+
+	log.SetOutput(writer)
+}
+
+func setupWebServer() {
+	http.HandleFunc("/", hookHandler)
+	address := conf.Address + ":" + strconv.FormatInt(conf.Port, 10)
+
+	log.Println("Listening on " + address)
+
+	e := http.ListenAndServe(address, nil)
+	if e != nil {
+		log.Println(e)
 	}
 }
 
