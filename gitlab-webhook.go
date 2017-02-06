@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
+
+var conf Config
 
 func checkForError(e error, msg ...string) {
 	if e != nil {
@@ -20,18 +22,17 @@ func checkForError(e error, msg ...string) {
 }
 
 func main() {
-	var conf = LoadConfig()
-	//setting handler
+	conf = LoadConfig()
+
 	http.HandleFunc("/", hookHandler)
 
-	address := conf.Address + ":" + string(conf.Port)
+	address := conf.Address + ":" + strconv.FormatInt(conf.Port, 10)
 
 	log.Println("Listening on " + address)
 
-	//starting server
-	err := http.ListenAndServe(address, nil)
-	if err != nil {
-		log.Println(err)
+	e := http.ListenAndServe(address, nil)
+	if e != nil {
+		log.Println(e)
 	}
 }
 
@@ -42,9 +43,19 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	var hook webhook
+	// Check incoming requests for proper access token
+	e := verifyToken(r)
+	checkForError(e)
 
+	var hook webhook
 	var data, _ = ioutil.ReadAll(r.Body)
 	json.Unmarshal(data, &hook)
-	log.Println(fmt.Sprintf("Repository URL: %s", hook.Repository.Url))
+}
+
+func verifyToken(r *http.Request) error {
+	var token = r.Header.Get("X-GitLab-Token")
+	if token != conf.Token {
+		return errors.New("invalid token received")
+	}
+	return nil
 }
