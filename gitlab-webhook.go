@@ -55,7 +55,7 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 func verifyToken(r *http.Request) error {
 	var token = r.Header.Get("X-GitLab-Token")
 	if token != conf.Token {
-		return errors.New("invalid token received")
+		return errors.New("Invalid token received")
 	}
 	return nil
 }
