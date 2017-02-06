@@ -68,11 +68,9 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 	var hook webhook
 	var data, _ = ioutil.ReadAll(r.Body)
 	json.Unmarshal(data, &hook)
-
 	verifyRepositoryName(&hook)
 
-	e = runCommand()
-	checkForError(e)
+	go runCommand()
 }
 
 func verifyToken(r *http.Request) error {
