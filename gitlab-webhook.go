@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
 	"strconv"
 )
 
@@ -50,6 +51,11 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 	var hook webhook
 	var data, _ = ioutil.ReadAll(r.Body)
 	json.Unmarshal(data, &hook)
+
+	verifyRepositoryName(&hook)
+
+	e = runCommand()
+	checkForError(e)
 }
 
 func verifyToken(r *http.Request) error {
@@ -57,5 +63,27 @@ func verifyToken(r *http.Request) error {
 	if token != conf.Token {
 		return errors.New("Invalid token received")
 	}
+	return nil
+}
+
+func verifyRepositoryName(hook *webhook) error {
+	if hook.Repository.Name != conf.Repository.Name {
+		return errors.New("Repository name does not match configured setting")
+	}
+	return nil
+}
+
+func runCommand() error {
+	var cmd = conf.Repository.Command
+	var command = exec.Command(cmd)
+	out, err := command.Output()
+
+	if err != nil {
+		return err
+	}
+
+	log.Println("Executed: " + cmd)
+	log.Println("Output: " + string(out))
+
 	return nil
 }
