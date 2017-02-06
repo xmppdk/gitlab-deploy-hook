@@ -2,17 +2,29 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
+func checkForError(e error, msg ...string) {
+	if e != nil {
+		if len(msg) == 0 {
+
+			panic(e.Error())
+		}
+		panic(errors.New(e.Error() + msg[0]))
+	}
+}
+
 func main() {
+	var conf = LoadConfig()
 	//setting handler
 	http.HandleFunc("/", hookHandler)
 
-	address := "0.0.0.0:3344"
+	address := conf.Address + ":" + string(conf.Port)
 
 	log.Println("Listening on " + address)
 
