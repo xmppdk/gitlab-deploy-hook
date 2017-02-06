@@ -11,16 +11,6 @@ import (
 
 var conf Config
 
-func checkForError(e error, msg ...string) {
-	if e != nil {
-		if len(msg) == 0 {
-
-			panic(e.Error())
-		}
-		panic(errors.New(e.Error() + msg[0]))
-	}
-}
-
 func main() {
 	conf = LoadConfig()
 
@@ -33,6 +23,16 @@ func main() {
 	e := http.ListenAndServe(address, nil)
 	if e != nil {
 		log.Println(e)
+	}
+}
+
+func checkForError(e error, msg ...string) {
+	if e != nil {
+		if len(msg) == 0 {
+
+			panic(e.Error())
+		}
+		panic(errors.New(e.Error() + msg[0]))
 	}
 }
 
