@@ -59,6 +59,9 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check incoming requests for proper access token
 	e := verifyToken(r)
+	if e != nil {
+		http.Error(w, e.Error(), http.StatusForbidden)
+	}
 	checkForError(e)
 
 	var hook webhook
