@@ -16,6 +16,7 @@ type Config struct {
 	Address    string
 	Port       int64
 	Repository configRepo
+	Token      string
 }
 
 // LoadConfig loads the configuration file and returns a config struct
