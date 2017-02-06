@@ -1,0 +1,1 @@
+# xmpp.dk deployment hook
