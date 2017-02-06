@@ -8,6 +8,7 @@ import (
 // Config struct to carry configuration items
 type Config struct {
 	Logfile        string
+	LogToFile      bool
 	Address        string
 	Port           int64
 	RepositoryName string

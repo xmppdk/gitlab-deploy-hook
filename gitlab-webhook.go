@@ -15,7 +15,9 @@ var conf Config
 
 func main() {
 	conf = LoadConfig()
-	setupLogging()
+	if conf.LogToFile == true {
+		setupLogging()
+	}
 	setupWebServer()
 }
 
