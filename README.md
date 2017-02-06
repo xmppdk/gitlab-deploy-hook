@@ -10,10 +10,7 @@
   "address": "0.0.0.0",
   "port": 3344,
   "token" : "MyVerySecretToken",
-  "repository":
-    {
-      "name": "foo",
-      "command": "/bin/true"
-    }
+  "repositoryname": "foo",
+  "command" : "/bin/true"
 }
 ```

@@ -5,18 +5,14 @@ import (
 	"os"
 )
 
-type configRepo struct {
-	Name    string
-	Command string
-}
-
 // Config struct to carry configuration items
 type Config struct {
-	Logfile    string
-	Address    string
-	Port       int64
-	Repository configRepo
-	Token      string
+	Logfile        string
+	Address        string
+	Port           int64
+	RepositoryName string
+	Command        string
+	Token          string
 }
 
 // LoadConfig loads the configuration file and returns a config struct

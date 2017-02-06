@@ -67,14 +67,14 @@ func verifyToken(r *http.Request) error {
 }
 
 func verifyRepositoryName(hook *webhook) error {
-	if hook.Repository.Name != conf.Repository.Name {
+	if hook.Repository.Name != conf.RepositoryName {
 		return errors.New("Repository name does not match configured setting")
 	}
 	return nil
 }
 
 func runCommand() error {
-	var cmd = conf.Repository.Command
+	var cmd = conf.Command
 	var command = exec.Command(cmd)
 	out, err := command.Output()
 
