@@ -16,7 +16,14 @@ var conf Config
 func main() {
 	conf = LoadConfig()
 	if conf.LogToFile == true {
-		setupLogging()
+		writer, e := os.OpenFile(conf.Logfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+		checkForError(e)
+
+		defer func() {
+			writer.Close()
+		}()
+
+		log.SetOutput(writer)
 	}
 	setupWebServer()
 }
@@ -29,17 +36,6 @@ func checkForError(e error, msg ...string) {
 		}
 		panic(errors.New(e.Error() + msg[0]))
 	}
-}
-
-func setupLogging() {
-	writer, e := os.OpenFile(conf.Logfile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	checkForError(e)
-
-	defer func() {
-		writer.Close()
-	}()
-
-	log.SetOutput(writer)
 }
 
 func setupWebServer() {
